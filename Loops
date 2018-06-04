@@ -1,0 +1,181 @@
+Sub TestIannick()
+Dim ranger As Range
+Dim rangere As Range
+
+Set ranger = Selection
+
+For Each rangere In ranger
+rangere.Select
+    If rangere.Value > 10 Then
+         With Selection.Interior
+        .Color = 65535
+         End With
+    End If
+    
+Next rangere
+
+End Sub
+
+
+Sub testsheets()
+
+Dim www As Worksheet
+
+For Each www In Worksheets
+Worksheets.Select
+MsgBox (www.Name)
+Next www
+
+End Sub
+
+
+
+
+
+Sub Foreachloopranges()
+Dim rng As Range
+Dim rcell As Range
+Set rng = Selection
+
+For Each rcell In rng
+rcell.Select
+    If rcell.Value > 200 Then
+        With Selection.Interior
+            .Color = 65535
+            
+        End With
+    End If
+Next rcell
+
+End Sub
+Sub foreachloopworksheets()
+Dim ws As Worksheet
+
+For Each ws In Worksheets
+    ws.Select
+    If ws.Name = "For next loops" Then
+    MsgBox (ws.Name)
+    End If
+
+Next ws
+End Sub
+
+
+Sub FornextloopAddSheets()
+Dim numberofsheets As Integer, counter As Integer
+
+numberofsheets = Application.InputBox("How many worksheets do you want to add?", "Add worksheets", , , , , , 1)
+
+If numberofsheets = False Then
+    Exit Sub 'End if user clicked CANCEL
+Else
+    'Add worksheets
+    For counter = 1 To numberofsheets
+        Worksheets.Add 'adds a worksheet
+    Next counter
+    
+End If
+
+End Sub
+
+
+
+Sub Testfornext()
+Dim i As Long
+Sheets("For next loops").Select
+Cells.ClearContents
+
+For i = 1 To 14 Step 5
+
+Cells(i, 1).Value = i
+Next i
+
+
+
+End Sub
+
+Sub dountilblankcell()
+Dim xrow As Long, xcol As Long, lastrow As Long
+xrow = 1
+xcol = 1
+
+
+Do Until Cells(xrow, xcol).Value = ""
+    'Cells(xrow, xcol).Select
+    xrow = xrow + 1
+Loop
+    lastrow = xrow - 1
+    
+
+End Sub
+
+Sub deleteblankrows11()
+Dim lastrow As Long, xrow As Long
+xrow = 1
+'Sheets("loops").Select
+'finds last cell in column A with data in it
+lastrow = Range("A950000").End(xlUp).Select
+
+End Sub
+
+
+
+Sub deleteblankrows()
+Dim lastrow As Long, xrow As Long
+xrow = 1
+'Sheets("loops").Select
+'finds last cell in column A with data in it
+lastrow = Range("A950000").End(xlUp).Select
+
+Do Until xrow = lastrow
+    If Cells(xrow, 1).Value = "" Then
+        Cells(xrow, 1).Select
+        Selection.EntireRow.delete
+        xrow = xrow - 1
+        lastrow = lastrow - 1
+        End If
+        
+xrow = xrow + 1
+
+Loop
+
+    
+End Sub
+Sub TestDoUntil()
+Sheets("loops").Select
+Cells.ClearContents
+
+'loops until condition is TRUE
+Do Until Range("A1").Value >= 124
+Range("A1").Value = Range("A1").Value + 1
+Loop
+End Sub
+Sub TestDoWhile()
+Sheets("loops").Select
+Cells.ClearContents
+
+Do While Range("A1").Value < 2
+Range("A1").Value = Range("A1").Value + 1
+Loop
+End Sub
+
+Sub dowhileloopsrowcolumn()
+Dim num As Integer, xrow As Long, xcol As Long
+Sheets("loops").Select
+Cells.ClearContents
+num = 10
+xrow = 1
+xcol = 1
+
+Do While xrow <= 15
+    Cells(xrow, xcol).Value = num
+    xrow = xrow + 1 'increment the row variable
+    xcol = xcol + 1
+    num = num + 10 'increment number
+If Cells(xrow, xcol).Value > 50 Then
+    Cells(xrow, xcol).Value = Cells(xrow, xcol).Value * 10
+    End If
+Loop
+    
+    
+End Sub
