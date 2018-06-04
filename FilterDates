@@ -1,0 +1,6 @@
+Sub Macro2()
+
+    Selection.AutoFilter
+    ActiveSheet.Range("$A$1:$V$83").AutoFilter field:=10, Operator:= _
+        xlFilterValues, Criteria2:=Array(1, "2/22/2018")
+End Sub
