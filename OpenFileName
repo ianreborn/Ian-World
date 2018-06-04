@@ -1,0 +1,13 @@
+Sub openfilename()
+
+Dim my_FileName As Variant
+
+my_FileName = Application.GetOpenFilename
+
+If my_FileName <> False Then
+
+Workbooks.Open Filename:=my_FileName
+
+End If
+
+End Sub
