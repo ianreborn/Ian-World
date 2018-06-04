@@ -1,0 +1,35 @@
+Sub AmenerGNC()
+
+Dim x As Workbook
+Dim y As Workbook
+Dim lastrow As Integer
+Dim lastrowresultat As Integer
+
+Set x = Workbooks.Open("Historique GNC G005210")
+Set y = Workbooks("Classeur1")
+
+x.Sheets("Historique GNC G005210").Range("A:F").Copy
+y.Sheets("Feuil1").Range("A1").PasteSpecial
+
+y.Activate
+
+y.Worksheets("Feuil1").Range("A:F").AutoFilter field:=3, Criteria1:="*015*"
+lastrowresultat = Worksheets("Feuil1").Cells(Rows.Count, 1).End(xlUp).Row
+Worksheets("Feuil1").Range("A1:F" & lastrowresultat).Select
+Selection.Interior.Color = vbYellow
+
+Worksheets("Feuil1").Range("A:F").AutoFilter field:=3, Criteria1:="*"
+Worksheets.Add after:=Worksheets(Worksheets.Count)
+Worksheets(Worksheets.Count).Name = "Resultat"
+Worksheets("Resultat").Columns("F:F").ColumnWidth = 23
+Worksheets("Feuil1").Select
+lastrow = Worksheets("Feuil1").Cells(Rows.Count, 1).End(xlUp).Row
+Range("A1:F" & lastrow).Copy
+Worksheets("Resultat").Select
+Worksheets("Resultat").Range("A1").PasteSpecial
+
+x.Close
+
+MsgBox "Operation completed"
+
+End Sub
