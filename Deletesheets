@@ -1,0 +1,7 @@
+Sub deletesheets()
+Application.DisplayAlerts = False
+
+Worksheets(Array(3, 4, 5)).Delete
+
+Application.DisplayAlerts = True
+End Sub
