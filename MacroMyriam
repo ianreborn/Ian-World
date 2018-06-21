@@ -1,0 +1,115 @@
+Sub NewWb()
+Dim wb As Workbook
+Dim monthyear As String
+Dim my_FileName As Variant
+Dim my_secondfile As Variant
+Dim numb As Range, number As Range
+Dim dateauj As String
+Dim dateparticipation As String
+
+'On doit rentrer le mois et l'année qu'on veut dans le nom du rapport à envoyer au client
+
+Set wb = Workbooks.Add
+monthyear = Application.InputBox("Il faut maintenant rentrer le mois et l'année du rapport" & vbNewLine & vbNewLine & "Ex: AVRIL-2018")
+ 
+    
+ActiveWorkbook.SaveAs Filename:="G:\Administration\Schemes - Clients\G005911 - Open Road Auto Group\04 - Administration\11 - Reports-statements\9. Eligibility\" & "G005911-Eligibility Report -" & monthyear
+'On ouvre le file CPA1516
+
+MsgBox ("Il faut maintenant ouvrir le CPA1516")
+
+ChDrive "G:"
+ChDir "G:\Administration\Schemes - Clients\G005911 - Open Road Auto Group\04 - Administration\11 - Reports-statements\3. Extractions"
+
+my_FileName = Application.GetOpenFilename
+
+If my_FileName <> False Then
+
+Workbooks.Open Filename:=my_FileName
+
+End If
+
+'Filtrer le tout dans le CPA1516
+
+
+dateauj = Application.InputBox("Rentrer le premier jour du mois présent avec le format suivant" & vbNewLine & vbNewLine & "AAAA-MM-JJ", "Participation date")
+
+ActiveSheet.Range("J1").AutoFilter field:=10, Criteria1:="<" & dateauj, Operator:=xlAnd
+ActiveSheet.Range("H1").AutoFilter field:=11, Criteria1:="RRSP"
+
+ActiveSheet.Range("D:E").Delete
+ActiveSheet.Range("A:V").Copy
+Application.DisplayAlerts = False
+ActiveWorkbook.Close
+Application.DisplayAlerts = True
+
+Workbooks("G005911-Eligibility Report -" & monthyear).Activate
+ActiveWorkbook.Sheets(1).PasteSpecial
+
+Set numb = ActiveWorkbook.Sheets(1).Range("A:A")
+numb.NumberFormat = "000000000"
+
+Set number = ActiveWorkbook.Sheets(1).Range("C:C")
+number.NumberFormat = " 0000"
+
+
+'Ouvrir l'extraction 7
+
+MsgBox ("Il faut maintenant ouvrir le DemoReg G005911")
+
+ChDrive "G:"
+ChDir "G:\Administration\Schemes - Clients\G005911 - Open Road Auto Group\04 - Administration\11 - Reports-statements\3. Extractions"
+
+my_FileName = Application.GetOpenFilename
+
+If my_FileName <> False Then
+
+Workbooks.Open Filename:=my_FileName
+
+End If
+
+
+ActiveWorkbook.Sheets(2).Select
+ActiveSheet.Range("$A$1:$EK$10000").RemoveDuplicates Columns:=Array(2, 20), _
+        Header:=xlYes
+        
+
+ActiveSheet.Range("W1").AutoFilter field:=23, Criteria1:="<" & dateauj, Operator:=xlAnd
+ActiveSheet.Range("U1").AutoFilter field:=21, Criteria1:="=Pre-Approved", Operator:=xlOr, Criteria2:="=missing application"
+ActiveSheet.Range("T1").AutoFilter field:=20, Criteria1:="RRSP"
+
+ActiveSheet.Range("C:C,E:K,N:S,V:V,Y:AB,AD:EK").Delete
+ActiveSheet.Range("A1:AD10000").Copy
+
+Application.DisplayAlerts = False
+ActiveWorkbook.Close
+Application.DisplayAlerts = True
+
+Workbooks("G005911-Eligibility Report -" & monthyear).Activate
+ActiveWorkbook.Sheets(2).Range("A1").PasteSpecial
+
+ActiveWorkbook.Sheets(1).Name = "Have enrolled"
+ActiveWorkbook.Sheets(2).Name = "Eligible-have not enrolled yet"
+
+ActiveWorkbook.Sheets(2).Range("A1") = "SUB GROUP"
+Sheets(2).Range("B1") = "MEMBER NUMBER"
+Sheets(2).Range("C1") = "PAYROLL NUMBER"
+Sheets(2).Range("D1") = "LAST NAME"
+Sheets(2).Range("E1") = "FIRST NAME"
+Sheets(2).Range("F1") = "BENEFIT"
+Sheets(2).Range("G1") = "BENEFIT STATUS"
+Sheets(2).Range("H1") = "BENEFIT PARTICIPATION DATE"
+Sheets(2).Range("I1") = "MEMBER STATUS"
+Sheets(2).Range("J1") = "JOINED COMPANY DATE"
+
+
+Application.DisplayAlerts = False
+ActiveWorkbook.Sheets(3).Delete
+Application.DisplayAlerts = True
+
+ActiveWorkbook.Save
+
+
+
+End Sub
+
