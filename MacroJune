@@ -1,0 +1,317 @@
+Sub NewWb()
+Dim wb As Workbook
+Dim rg, ranger As Range
+Dim languerg, langer As Range
+Dim sexerg, sexer As Range
+Dim provincerg, provincer As Range
+Dim paysrg, payer As Range
+Dim postal, postalrg As Range
+Dim total, totalrg, totalrg2, totalrg3, totalrg4, totalrg5  As Range
+Dim numgroupe, numtrans As Range
+Dim numreer, numceli As Range
+Dim dateparticipation, dateparticipation2 As Range
+Dim employerg As Range
+
+Dim monthyear As String
+Dim lastrow, lastrow2 As String
+
+'On doit rentrer le mois et l'année qu'on veut dans le nom du rapport à envoyer au client
+
+Set wb = Workbooks.Add
+
+        
+monthyear = Application.InputBox("Il faut  rentrer le mois et l'année du rapport" & vbNewLine & vbNewLine & "Ex: 20180601 pour juin 2018")
+ 
+    
+ActiveWorkbook.SaveAs Filename:="G:\Administration\Schemes - Clients\G000267 - REER collectif Desjardins\04 - Administration\11 - Rapports-Relevés\7. Rapports\" & "G000267_DEMO_Embauches_" & monthyear
+
+
+'On ouvre le file CPA1516
+
+MsgBox ("Maintenant, il faut ouvrir le fichier G000267 à formatter")
+
+ChDrive "G:"
+ChDir "G:\Administration\Schemes - Clients\G000267 - REER collectif Desjardins\04 - Administration\11 - Rapports-Relevés\3. Extractions\"
+
+my_FileName = Application.GetOpenFilename
+
+If my_FileName <> False Then
+
+Workbooks.Open Filename:=my_FileName
+
+End If
+
+ActiveWorkbook.Sheets(1).Select
+ActiveSheet.Columns("K:K").Select
+    Selection.TextToColumns Destination:=Range("K1"), DataType:=xlDelimited, _
+        TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=False, Tab:=True, _
+        Semicolon:=False, Comma:=False, Space:=False, Other:=False, FieldInfo _
+        :=Array(1, 1), TrailingMinusNumbers:=True
+        
+ActiveWorkbook.Sheets(1).Cells.Select
+
+Selection.Copy
+
+Application.DisplayAlerts = False
+
+ActiveWorkbook.Close
+
+Application.DisplayAlerts = True
+
+Workbooks("G000267_DEMO_Embauches_" & monthyear).Activate
+ActiveWorkbook.Sheets(1).PasteSpecial
+
+
+lastrow = ActiveWorkbook.Sheets(1).Cells(Rows.Count, 1).End(xlUp).Row
+
+Set rg = Sheets(1).Range("A7:A" & lastrow)
+
+For Each ranger In rg 'Manque sous-groupes 04(SIGMA),14(SERVICE FINANCIER VMD) et 17(CAISSE CENTRALE DESJARDINS)
+ranger.Select
+    If ranger.Value = "Fédération des Caisses Desjardins" Then
+    ActiveCell.Value = "01"
+    
+    ElseIf ranger.Value = "Société historique Alphonse-Desjardins" Then
+    ActiveCell.Value = "02"
+    
+    ElseIf ranger.Value = "Desjardins Sécurité Financière" Then
+    ActiveCell.Value = "03"
+    
+    ElseIf ranger.Value = "Desjardins Gestion internationale d'actifs" Then
+    ActiveCell.Value = "05"
+    
+    ElseIf ranger.Value = "The Personal Insurance Company" Then
+    ActiveCell.Value = "07"
+    
+    ElseIf ranger.Value = "Desjardins Groupe d'assurances générales" Then
+    ActiveCell.Value = "08"
+    
+    ElseIf ranger.Value = "Desjardins Assurances générales" Then
+    ActiveCell.Value = "09"
+    
+    ElseIf ranger.Value = "La Personnelle" Then
+    ActiveCell.Value = "10"
+    
+    ElseIf ranger.Value = "Valeurs mobilières Desjardins" Then
+    ActiveCell.Value = "12"
+    
+    ElseIf ranger.Value = "Gestion Desjardins Capital inc." Then
+    ActiveCell.Value = "16"
+    
+    ElseIf ranger.Value = "Groupe immobilier Desjardins" Then
+    ActiveCell.Value = "18"
+    
+    ElseIf ranger.Value = "Desjardins Société de placement" Then
+    ActiveCell.Value = "19"
+    
+    ElseIf ranger.Value = "Groupe Technologies Desjardins" Then
+    ActiveCell.Value = "20"
+    
+    ElseIf ranger.Value = "Desjardins Gestion des Opérations des produits de placement (DGOPP)" Then
+    ActiveCell.Value = "21"
+    
+    ElseIf ranger.Value = "Groupe Services partagés Desjardins" Then
+    ActiveCell.Value = "22"
+    
+    ElseIf ranger.Value = "Banque ZAG" Then
+    ActiveCell.Value = "23"
+  
+    End If
+    
+Next ranger
+
+rg.NumberFormat = "00"
+
+Application.DisplayAlerts = False
+ActiveSheet.Columns("C:C").Select
+    Selection.TextToColumns Destination:=Range("C1"), DataType:=xlDelimited, _
+        TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=False, Tab:=True, _
+        Semicolon:=False, Comma:=True, Space:=False, Other:=False, FieldInfo _
+        :=Array(Array(1, 1), Array(2, 1)), TrailingMinusNumbers:=True
+        
+Application.DisplayAlerts = True
+
+Set employerg = Sheets(1).Range("B7:B" & lastrow)
+
+
+
+Set sexerg = Sheets(1).Range("F7:F" & lastrow)
+
+For Each sexer In sexerg
+    sexer.Select
+        If sexer.Value = "Masculin" Then
+        sexer.Value = "M"
+        ElseIf sexer.Value = "Féminin" Then
+        sexer.Value = "F"
+        
+        End If
+        
+Next sexer
+
+Set languerg = Sheets(1).Range("G7:G" & lastrow)
+
+For Each langer In languerg
+    langer.Select
+        If langer.Value = "fr_CA" Then
+        langer.Value = "F"
+        ElseIf langer.Value = "en_US" Then
+        langer.Value = "E"
+        End If
+        
+Next langer
+        
+Set provincerg = Sheets(1).Range("I7:J" & lastrow)
+
+For Each provincer In provincerg
+    provincer.Select
+        If provincer.Value = "Québec" Then
+        provincer.Value = "QC"
+        ElseIf provincer.Value = "Ontario" Then
+        provincer.Value = "ON"
+        ElseIf provincer.Value = "Alberta" Then
+        provincer.Value = "AB"
+        ElseIf provincer.Value = "Colombie-Britannique" Then
+        provincer.Value = "BC"
+        ElseIf provincer.Value = "Manitoba" Then
+        provincer.Value = " MB"
+        
+        End If
+        
+Next provincer
+
+Set paysrg = Sheets(1).Range("M7:M" & lastrow)
+
+For Each payer In paysrg
+    payer.Select
+        If payer.Value = "Canada" Then
+        payer.Value = "CA"
+        End If                                   'Faudrait réviser pour rajouter des elseif si on a des US ou France
+        
+Next payer
+
+
+Set postalrg = Sheets(1).Range("N7:N" & lastrow)
+For Each postal In postalrg
+    postal.Select
+    postal.Replace what:=" ", replacement:=""
+    
+    
+Next
+
+
+rg.Copy
+Sheets(2).Select
+ActiveSheet.Range("D2:D10000").PasteSpecial
+
+    
+            Set totalrg = Sheets(1).Range("C7:E" & lastrow)
+            Set totalrg2 = Sheets(1).Range("F7:G" & lastrow)
+            Set totalrg3 = Sheets(1).Range("H7:H" & lastrow)
+            Set totalrg4 = Sheets(1).Range("I7:K" & lastrow)
+            Set totalrg5 = Sheets(1).Range("L7:N" & lastrow)
+For Each total In totalrg
+    total.Value = UCase(total.Value)
+    
+Next
+
+          totalrg.Copy
+          Sheets(2).Select
+          ActiveSheet.Range("H2:J10000").PasteSpecial
+          
+          totalrg2.Copy
+          Sheets(2).Select
+          ActiveSheet.Range("L2:M10000").PasteSpecial
+          
+          totalrg3.Copy
+          Sheets(2).Select
+          ActiveSheet.Range("O2:O10000").PasteSpecial
+          
+          totalrg4.Copy
+          Sheets(2).Select
+          ActiveSheet.Range("S2:U10000").PasteSpecial
+          
+          totalrg5.Copy
+          Sheets(2).Select
+          ActiveSheet.Range("X2:Z10000").PasteSpecial
+          
+     employerg.Copy
+     Sheets(2).Select
+     ActiveSheet.Range("F2:F10000").PasteSpecial
+
+lastrow2 = ActiveWorkbook.Sheets(2).Range("D:D").Cells(Rows.Count, 1).End(xlUp).Row
+
+Set numgroupe = Sheets(2).Range("C2:C" & lastrow2)
+numgroupe.Select
+numgroupe.Value = "G000267"
+
+Set numtrans = Sheets(2).Range("A2:A" & lastrow2)
+numtrans.Select
+numtrans.Value = "P"
+
+Set numreer = Sheets(2).Range("AF2:AF" & lastrow2)
+numreer.Select
+numreer.Value = "REER"
+
+Set numceli = Sheets(2).Range("AH2:AH" & lastrow2)
+numceli.Select
+numceli.Value = "CELI"
+'Set dateparticipation = Sheets(2).Range("AG2:AG" & lastrow2)
+'dateparticipation.Select
+'dateparticipation.Value = monthyear
+
+dateparticipation = Application.InputBox("Rentrer la date de particpation au REER/CELI", "Date participation")
+Set dateparticipation2 = Sheets(2).Range("AG2:AG" & lastrow2, "AI2:AI" & lastrow2)
+dateparticipation2.Select
+dateparticipation2.Value = dateparticipation
+
+
+'Set dateparticipation2 = Sheets(2).Range("AI2:AI" & lastrow2)
+'datepartipation2.Select
+'daparticipation2.Value = monthyear
+
+ActiveSheet.Cells(1, 1).Value = "Transaction"
+ActiveSheet.Cells(1, 2).Value = "Date d'effet"
+ActiveSheet.Cells(1, 3).Value = "No du groupe"
+ActiveSheet.Cells(1, 4).Value = "Sous groupe"
+ActiveSheet.Cells(1, 5).Value = "Date d'effet sous groupe"
+ActiveSheet.Cells(1, 6).Value = "No employe"
+ActiveSheet.Cells(1, 8).Value = "Nom"
+ActiveSheet.Cells(1, 9).Value = "Prenom"
+ActiveSheet.Cells(1, 10).Value = "Date de naissance"
+ActiveSheet.Cells(1, 12).Value = "Sexe"
+ActiveSheet.Cells(1, 13).Value = "Langue"
+ActiveSheet.Cells(1, 15).Value = "Date entree en service"
+ActiveSheet.Cells(1, 19).Value = "Province emploi"
+ActiveSheet.Cells(1, 20).Value = "Province de residence"
+ActiveSheet.Cells(1, 21).Value = "Adresse ligne 1"
+ActiveSheet.Cells(1, 23).Value = "Ville"
+ActiveSheet.Cells(1, 24).Value = "Pays"
+ActiveSheet.Cells(1, 26).Value = "Code postal"
+ActiveSheet.Cells(1, 32).Value = "Nom du produit 1"
+ActiveSheet.Cells(1, 33).Value = "Date de participation au produit 1"
+ActiveSheet.Cells(1, 34).Value = "Nom du produit 2"
+ActiveSheet.Cells(1, 35).Value = "Date de participation au produit 2"
+
+
+
+
+ActiveSheet.Select
+ Selection.RowHeight = 15
+    Selection.ColumnWidth = 10
+    
+    
+   
+    
+Application.DisplayAlerts = False
+
+ActiveWorkbook.Worksheets(Array(1, 3)).Delete
+
+Application.DisplayAlerts = True
+
+ActiveWorkbook.Save
+
+
+
+
+End Sub
+
