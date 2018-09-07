@@ -1,0 +1,118 @@
+Sub TESTInstr2()
+On Error Resume Next
+
+Dim SirCar As String
+Dim r As Long, w As Long, lastrow As Long, final As Long
+Dim wb As Workbook
+Dim monthyear As String, myrangename As String
+Dim namedrange As Range
+Dim row, clm As Long
+
+
+
+Set wb = Workbooks.Add
+
+monthyear = Application.InputBox("Rentrer la date de traitement(Aujourd'hui)")
+
+ActiveWorkbook.SaveAs Filename:="G:\Erc\ERC_SUIVI_HEBDO_DD et ACCES D\Traités\Suivi-AccesD-" & monthyear
+
+MsgBox ("Il faut maintenant ouvrir le fichier original")
+
+ChDrive "G:"
+ChDir "G:\Erc\ERC_SUIVI_HEBDO_DD et ACCES D"
+
+    my_FileName = Application.GetOpenFilename
+
+    If my_FileName <> False Then
+
+    Workbooks.Open Filename:=my_FileName
+
+    End If
+    
+ActiveSheet.Range("A:K").Copy
+
+Application.DisplayAlerts = False
+ActiveWorkbook.Close
+Application.DisplayAlerts = True
+
+Workbooks("Suivi-AccesD-" & monthyear & ".xlsx").Activate
+ActiveWorkbook.Sheets(1).Range("A1").PasteSpecial
+
+    Columns("C:D").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+
+w = Sheets(1).Cells(Rows.Count, 2).End(xlUp).row
+
+For r = 2 To w
+
+
+If InStr(1, Cells(r, 2), "G", vbTextCompare) = 0 Then
+
+    SirCar = "G" & Mid(Cells(r, 2), InStr(1, Cells(r, 2), "C", vbTextCompare) + 1, 6)
+    
+    Else
+    
+    SirCar = Mid(Cells(r, 2), InStr(1, Cells(r, 2), "G", vbTextCompare), 7)
+
+End If
+
+Cells(r, 3).Value = SirCar
+
+Next
+
+ThisWorkbook.Activate
+
+Sheets("ListeAdmins").Range("A:B").Copy
+
+
+Workbooks("Suivi-AccesD-" & monthyear & ".xlsx").Activate
+ActiveWorkbook.Sheets(2).Range("A1").PasteSpecial
+
+lastrow = Sheets(2).Cells(Rows.Count, 2).End(xlUp).row
+
+Set namedrange = Sheets("Feuil2").Range("A2:B" & lastrow)
+
+myrangename = "Liste2"
+
+ActiveWorkbook.Names.Add Name:=myrangename, RefersTo:=namedrange
+
+Sheets("Feuil1").Cells(3, 4).Activate
+
+table1 = sheet1.Range("C2:C" & w)
+
+For final = 2 To w
+
+    Cells(final, 4).FormulaR1C1 = "=VLOOKUP(RC[-1],Liste2,2,0)"
+    
+    
+Next
+
+
+
+End Sub
+
+
+
+Sub NewWb()
+
+If my_FileName <> False Then
+
+Workbooks.Open Filename:=my_FileName
+
+End If
+
+Sheets(2).Range("E1") = "FIRST NAME"
+Sheets(2).Range("F1") = "BENEFIT"
+Sheets(2).Range("G1") = "BENEFIT STATUS"
+Sheets(2).Range("H1") = "BENEFIT PARTICIPATION DATE"
+Sheets(2).Range("I1") = "MEMBER STATUS"
+Sheets(2).Range("J1") = "JOINED COMPANY DATE"
+
+
+Application.DisplayAlerts = False
+ActiveWorkbook.Sheets(3).Delete
+Application.DisplayAlerts = True
+
+ActiveWorkbook.Save
+
+End Sub
